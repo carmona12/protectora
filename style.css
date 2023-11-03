@@ -1,0 +1,35 @@
+.fotoInicio {
+    background-image: url(./imagenes/foto_inicio.png);
+    background-size: cover;
+    background-position: 100%;
+    background-repeat: no-repeat;
+    min-height: 90vh;
+    max-width: 100%;
+}
+
+.fotoInicio h1 {
+    color: rgb(231, 231, 231);
+    font-size: 2.5rem;
+    padding: 0px 20px;
+    text-shadow: 2px 2px 5px rgb(44, 44, 44);
+}
+
+.fotoInicio span {
+    color: #F5F69F;
+}
+
+.containerContacto {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.bodyContacto {
+    background-color: #82e79c;
+    color: #333;
+    font-family: Arial, sans-serif;
+}
+.formularioContacto{
+    background-color: rgb(149, 248, 149);
+}
