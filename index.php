@@ -1,3 +1,9 @@
+<?php
+include_once "Conexion.php";
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -22,19 +28,25 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">Inicio</a>
+              <a class="nav-link active" aria-current="page" href="./index.php">Inicio</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Sobre nosotros</a>
+              <a class="nav-link" href="./sobreNosotros.php">Sobre nosotros</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Adoptar</a>
+              <a class="nav-link" href="./adoptar.php">Adoptar</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Colabora</a>
+              <a class="nav-link" href="./colabora.php">Colabora</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="./contactenos.php">Contáctenos</a>
+            </li>
+          </ul>
+
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="usuario/login.php"><i class="fas fa-sign-in-alt"></i> Iniciar sesión</a>
             </li>
           </ul>
         </div>

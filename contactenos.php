@@ -23,19 +23,25 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">Inicio</a>
+                            <a class="nav-link active" aria-current="page" href="./index.php">Inicio</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Sobre nosotros</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Adoptar</a>
+                            <a class="nav-link" href="./adoptar.php">Adoptar</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Colabora</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="./contactenos.php">Contáctenos</a>
+                        </li>
+                    </ul>
+                    
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="usuario/login.php"><i class="fas fa-sign-in-alt"></i> Iniciar sesión</a>
                         </li>
                     </ul>
                 </div>
@@ -45,13 +51,13 @@
     <div class="container my-3 containerContacto">
         <h1 class="text-warning">Cuéntanos qué te trae por aquí...</h1>
         <div class="row" id="containerContacto">
-            <div class="col-lg-6 col-md-12">
+            <div class="col-lg-6 col-md-12 text-center">
                 <img src="./imagenes/contactar.jpg" alt="" class="img-fluid">
                 <div class="mb-3 ms-0" id="ubicacion">
                     <div class="">
                         <div class=" border p-2">
                             <h5 class="fw-bolder text-decoration-underline">Dónde encontrarnos</h5>
-                            <p>Guillena</p>
+                            <p>Guillena(Sevilla)</p>
                             <p>Tlfno: 958-21-49-53</p>
                             <p>C.P. 41210 (GUILLENA)</p>
                         </div>
@@ -64,14 +70,14 @@
 
             <div class="col-lg-6 ">
                 <form class="row rounded formularioContacto needs-validation" novalidate>
-                    <div class="col">
+                    <div class="col my-3">
                         <label for="inputNombre" class="form-label">Nombre</label>
                         <input type="text" class="form-control" placeholder="Nombre" aria-label="Nombre" id="inputNombre" required>
                         <div class="invalid-feedback">
                             Introduzca un nombre, por favor!
                         </div>
                     </div>
-                    <div class="col">
+                    <div class="col my-3">
                         <label for="inputApellidos" class="form-label">Apellidos</label>
                         <input type="text" class="form-control" placeholder="Apellidos" aria-label="Apellidos" id="inputApellidos" required>
                         <div class="invalid-feedback">
@@ -79,21 +85,21 @@
                         </div>
                     </div>
 
-                    <div class="col-12">
+                    <div class="col-12 mb-3">
                         <label for="inputEmail4" class="form-label">Email</label>
                         <input type="email" class="form-control" id="inputEmail4" placeholder="example@gmail.com" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" required>
                         <div class="invalid-feedback">
                             Error, introduzca un email válido!!
                         </div>
                     </div>
-                    <div class="col-12">
+                    <div class="col-12 mb-3">
                         <label for="inputAsunto" class="form-label">Asunto</label>
                         <input type="text" class="form-control" id="inputAsunto" required>
                         <div class="invalid-feedback">
                             Por favor, indique algún asunto!
                         </div>
                     </div>
-                    <div class="col-12">
+                    <div class="col-12 mb-3">
                         <label for="textareaMensaje" class="form-label">Qué quieres decirnos, Coméntanos sin miedo!!</label>
                         <textarea class="form-control" id="textareaMensaje" rows="5" minlength="10" maxlength="500" required></textarea>
                         <div class="invalid-feedback">
@@ -101,7 +107,7 @@
                         </div>
                     </div>
 
-                    <div class="col-12">
+                    <div class="col-12 mb-3">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" required>
                             <label class="form-check-label" for="flexCheckDefault">

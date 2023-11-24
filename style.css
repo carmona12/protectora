@@ -30,6 +30,31 @@
     color: #333;
     font-family: Arial, sans-serif;
 }
-.formularioContacto{
+
+.formularioContacto {
     background-color: rgb(149, 248, 149);
+}
+
+.card-img-top {
+    height: 250px;
+    object-fit: cover;
+}
+
+#footerPart1 {
+    background-color: #82e79c;
+}
+
+#footerPart2 {
+    background-color: #67de85;
+}
+
+/* Estilo login */
+#botonLogin:hover {
+    background-color: rgba(15, 15, 15, 0.93);
+}
+
+#bodyLogin{
+    background-image: url(./imagenes/10223.jpg);
+    font-family: 'Arial', sans-serif;
+    margin: 0; 
 }
