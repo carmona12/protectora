@@ -4,7 +4,7 @@ include_once "../Conexion.php";
 if (isset($_POST['botonRegistro'])) {
     // Recuperamos los datos del formulario
     $nombre = $_POST['nombre'];
-    $apellidos = $_POST['apellidos'];
+    $apellidos = $_POST['apellidos'];rgteghegergrgregregregregergergerg
     $dni = $_POST['dni'];
     $telefono = $_POST['telefono'];
     $cp = $_POST['cp'];
