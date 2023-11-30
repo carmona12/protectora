@@ -39,7 +39,7 @@ $(Document).ready(function () {
                 cp: cp,
                 email: email,
                 usuario: usuario,
-                contraseña: password
+                password: password
             },
             success: function(response){
                 alert(response);
