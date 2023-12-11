@@ -1,3 +1,11 @@
+<?php
+include_once "Conexion.php";
+session_start();
+if (isset($_SESSION['usuario'])) {
+    $usuario = $_SESSION['usuario'];
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,6 +17,23 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <script src="./js/bootstrap.bundle.min.js"></script>
+    <style>
+        @media (min-width: 1370px) {
+            footer {
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+            }
+        }
+        #tituloAcordeon1{
+            background-color: #6db1bf;
+            font-weight: bold;
+        }
+        #tituloAcordeon2{
+            background-color: #A09FF6;
+            font-weight: bold;
+        }
+    </style>
 </head>
 
 <body style="background-image: url(./imagenes/acordeon/a1.jpg);">
@@ -22,10 +47,10 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="./index.php">Inicio</a>
+                            <a class="nav-link" aria-current="page" href="./index.php">Inicio</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="./sobreNosotros.php">Sobre nosotros</a>
+                            <a class="nav-link active" href="./sobreNosotros.php">Sobre nosotros</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="./adoptar.php">Adoptar</a>
@@ -37,55 +62,94 @@
                             <a class="nav-link" href="./contactenos.php">Contáctenos</a>
                         </li>
                     </ul>
+                    <ul class="navbar-nav ml-auto">
+                        <?php if (isset($usuario)) : ?>
+                            <!-- Si hay una sesión activa, muestra el logotipo de usuario y la opción de cerrar sesión -->
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="usuarioDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-user"></i> <?php echo $usuario; ?>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="usuarioDropdown">
+                                    <a class="dropdown-item" href="#">Mi Perfil</a>
+                                    <a class="dropdown-item" href="#">Configuración</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="./usuario/logout.php">Cerrar Sesión</a>
+                                </div>
+                            </li>
+                        <?php else : ?>
+                            <!-- Si no hay una sesión activa, muestra la opción de iniciar sesión -->
+                            <li class="nav-item">
+                                <a class="nav-link" href="usuario/login.php"><i class="fas fa-sign-in-alt"></i> Iniciar sesión</a>
+                            </li>
+                        <?php endif; ?>
+                    </ul>
                 </div>
             </div>
         </nav>
     </header>
     <!-------------------------------- Acordeón sobre nosotros -------------------------------->
-    <section class="container my-2">
-        <div class="accordion accordion-flush" id="accordionFlushExample">
+    <section class="container mt-5">
+        <div class="accordion accordion-flush mb-3" id="accordionFlushExample">
             <div class="accordion-item">
                 <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                    <button class="accordion-button collapsed" id="tituloAcordeon1" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
                         ¿Quiénes Somos?
                     </button>
                 </h2>
                 <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-                    <div class="accordion-body">
+                    <div class="accordion-body" style="background-color: #A09FF6;">
                         <div class="row align-items-center">
                             <div class="col-md-6 text-center">
                                 Somos una protectora de animales dedicada al bienestar y cuidado de los animales en Guillena, Sevilla. Nuestra misión es proporcionar un hogar seguro y amoroso para aquellos animales que han sido abandonados o maltratados.
                             </div>
                             <div class="col-md-6 text-end">
-                                <img src="./imagenes/acordeon/quienesSomos.jpg" alt="" class="img-fluid" style="max-height: 250px;">
+                                <img src="./imagenes/acordeon/perroPelota.gif" alt="" class="img-fluid" style="max-height: 250px;">
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
             <div class="accordion-item">
                 <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                    <button class="accordion-button collapsed" id="tituloAcordeon2" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
                         Nuestros Objetivos
                     </button>
                 </h2>
                 <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-                    <div class="accordion-body">Nuestro principal objetivo es promover el respeto y el amor hacia los animales, así como fomentar la adopción responsable. Trabajamos arduamente para concientizar a la comunidad sobre la importancia de cuidar a nuestros amigos peludos.</div>
+                    <div class="accordion-body" style="background-color: #F5F69F;">
+                        <div class="row align-items-center">
+                            <div class="col-md-6 text-end">
+                                <img src="./imagenes/acordeon/nuestrosObjetivos.png" alt="" class="img-fluid" style="max-height: 250px;">
+                            </div>
+                            <div class="col-md-6 text-center">
+                                Nuestro principal objetivo es promover el respeto y el amor hacia los animales, así como fomentar la adopción responsable. Trabajamos arduamente para concientizar a la comunidad sobre la importancia de cuidar a nuestros amigos peludos.
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="accordion-item">
                 <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                    <button class="accordion-button collapsed" id="tituloAcordeon1" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
                         Logros Destacados
                     </button>
                 </h2>
                 <div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-                    <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the third item's accordion body. Nothing more exciting happening here in terms of content, but just filling up the space to make it look, at least at first glance, a bit more representative of how this would look in a real-world application.</div>
+                    <div class="accordion-body" style="background-color: #A09FF6;">
+                        <div class="row align-items-center">
+                            <div class="col-md-6 text-center">
+                                ¡Estamos orgullosos de nuestros logros! Hemos logrado aumentar significativamente las adopciones de animales rescatados, mejorando así sus vidas y encontrando hogares amorosos. Además, hemos llevado a cabo exitosas campañas de concientización que han educado a la comunidad sobre el bienestar animal. ¡Gracias a nuestro dedicado equipo y a la generosidad de nuestros donantes por hacer todo esto posible!
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <img src="./imagenes/acordeon/nuestrosLogros.png" alt="" class="img-fluid" style="max-height: 250px;">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
+
 
     <!------------------------------ FOOTER -------------------------------->
     <footer class="text-center text-white" style="background-color: #6db1bf;">

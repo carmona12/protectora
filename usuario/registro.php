@@ -2,73 +2,58 @@
 include_once "../Conexion.php";
 
 if (isset($_POST['botonRegistro'])) {
-    // Recuperamos los datos del formulario
-    $nombre = $_POST['nombre'];
-    $apellidos = $_POST['apellidos'];rgteghegergrgregregregregergergerg
-    $dni = $_POST['dni'];
-    $telefono = $_POST['telefono'];
-    $cp = $_POST['cp'];
-    $email = $_POST['email'];
-    $usuario = $_POST['usuario'];
-    $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
 
-    // Validamos los datos recuperados
-    if (empty($nombre) || empty($apellidos) || empty($dni) || empty($telefono) || empty($cp) || empty($email) || empty($usuario) || empty($password)) {
-        echo 'Todos los campos son obligatorios';
-        exit();
-    }
+    if (!empty($_POST["nombre"]) && !empty($_POST["apellidos"]) && !empty($_POST["dni"]) && !empty($_POST["telefono"]) && !empty($_POST["cp"]) && !empty($_POST["email"]) && !empty($_POST["usuario"]) && !empty($_POST["password"])) {
 
-    // Validación DNI
-    $dniRegex = '/^[0-9]{8}[A-HJ-NP-TV-Za-hj-np-tv-z]$/';
-    if (!preg_match($dniRegex, $dni)) {
-        echo 'El DNI no es válido';
-        exit();
-    }
+        $nombre = $_POST['nombre'];
+        $apellidos = $_POST['apellidos'];
+        $dni = $_POST['dni'];
+        $telefono = $_POST['telefono'];
+        $cp = $_POST['cp'];
+        $email = $_POST['email'];
+        $usuario = $_POST['usuario'];
+        $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
 
-    // Validación correo electrónico
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        echo 'El correo electrónico no es válido';
-        exit();
-    }
+        // Añadir el valor de la columna "rol"
+        $rol = "usuario";
 
-    // Verificar si el usuario ya existe
-    $sqlVerificarUsuario = "SELECT * FROM usuarios WHERE usuario = :usuario";
-    $stmtVerificarUsuario = $conn->prepare($sqlVerificarUsuario);
-    $stmtVerificarUsuario->bindParam(':usuario', $usuario);
-    $stmtVerificarUsuario->execute();
+        // Verificar si el usuario ya existe
+        $sqlVerificarUsuario = "SELECT * FROM usuarios WHERE usuario = :usuario";
+        $stmtVerificarUsuario = $conn->prepare($sqlVerificarUsuario);
+        $stmtVerificarUsuario->bindParam(':usuario', $usuario);
+        $stmtVerificarUsuario->execute();
 
-    // Comprobar si ya existe el usuario
-    if ($stmtVerificarUsuario->rowCount() > 0) {
-        echo "Este usuario ya ha sido registrado en la base de datos.";
-    } else {
-        try {
-            // Preparar la consulta de inserción
-            $sqlInsercion = "INSERT INTO usuarios (nombre, apellidos, dni, telefono, cp, email, usuario, password) VALUES (:nombre, :apellidos, :dni, :telefono, :cp, :email, :usuario, :password)";
+        if ($stmtVerificarUsuario->rowCount() > 0) {
+            echo '<div class="alert alert-danger alert-dismissible fade show d-flex justify-content-between align-items-center" role="alert">';
+            echo 'El nombre de usuario ya existe, por favor, escoge otro.';
+            echo '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+            echo '</div>';
+        } else {
 
-            // Preparar la consulta
-            $stmtInsercion = $conn->prepare($sqlInsercion);
+            try {
+                $sqlInsertarUsuario = "INSERT INTO usuarios (nombre, apellidos, dni, telefono, cp, email, usuario, password, rol) VALUES (:nombre, :apellidos, :dni, :telefono, :cp, :email, :usuario, :password, :rol)";
 
-            // Vincular parámetros
-            $stmtInsercion->bindParam(':nombre', $nombre);
-            $stmtInsercion->bindParam(':apellidos', $apellidos);
-            $stmtInsercion->bindParam(':dni', $dni);
-            $stmtInsercion->bindParam(':telefono', $telefono);
-            $stmtInsercion->bindParam(':cp', $cp);
-            $stmtInsercion->bindParam(':email', $email);
-            $stmtInsercion->bindParam(':usuario', $usuario);
-            $stmtInsercion->bindParam(':password', $password);
+                $stmtInsertarUsuario = $conn->prepare($sqlInsertarUsuario);
 
-            // Ejecutar la consulta
-            $stmtInsercion->execute();
+                $stmtInsertarUsuario->bindParam(':nombre', $nombre);
+                $stmtInsertarUsuario->bindParam(':apellidos', $apellidos);
+                $stmtInsertarUsuario->bindParam(':dni', $dni);
+                $stmtInsertarUsuario->bindParam(':telefono', $telefono);
+                $stmtInsertarUsuario->bindParam(':cp', $cp);
+                $stmtInsertarUsuario->bindParam(':email', $email);
+                $stmtInsertarUsuario->bindParam(':usuario', $usuario);
+                $stmtInsertarUsuario->bindParam(':password', $password);
+                $stmtInsertarUsuario->bindParam(':rol', $rol);
+                $stmtInsertarUsuario->execute();
 
-            echo 'Has sido registrado!';
-            header('Location: login.php');
-        } catch (PDOException $e) {
-            echo 'Error: ' . $e->getMessage();
+                echo 'Has sido registrado!';
+                header('Location: login.php');
+            } catch (PDOException $e) {
+                echo 'Error: ' . $e->getMessage();
+            }
         }
     }
 }
-
 
 ?>
 <!DOCTYPE html>
@@ -82,6 +67,7 @@ if (isset($_POST['botonRegistro'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
     <link rel="stylesheet" href="../style.css">
     <script src="../js/bootstrap.bundle.min.js"></script>
+    <script src="../jquery-3.7.1.min.js"></script>
     <script src="./registro.js"></script>
 </head>
 
@@ -94,7 +80,7 @@ if (isset($_POST['botonRegistro'])) {
                     <i class="fas fa-paw"></i>
                     <h2 class="text-primary">Bienvenid@ a nuestra Protectora</h2>
                 </div>
-                <form class="container" action="" method="post">
+                <form class="container" action="" method="post" onsubmit="return validarFormularioRegistro()">
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <input type="text" class="form-control" id="inputNombreRegistro" placeholder="Nombre" name="nombre">

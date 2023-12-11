@@ -1,12 +1,65 @@
 <?php
 include_once "Conexion.php";
+session_start();
+if (isset($_SESSION['usuario'])) {
+    $usuario = $_SESSION['usuario'];
+  }
+
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     $especieId = $_GET['id'];
 
+    // Consulta para obtener las distintas raza de la especie seleccionada
+    $sqlRazaAnimal = "SELECT DISTINCT raza FROM animal WHERE id_especie = :especieId";
+    $stmtRazaAnimal = $conn->prepare($sqlRazaAnimal);
+    $stmtRazaAnimal->bindParam(':especieId', $especieId);
+    $stmtRazaAnimal->execute();
+    $razas = $stmtRazaAnimal->fetchAll(PDO::FETCH_COLUMN);
+
+    // Consulta para obtener los distintos tamaños de la especie selecionada
+    $sqlTamañoAnimal = "SELECT DISTINCT tamano FROM animal WHERE id_especie = :especieId";
+    $stmtTamañoAnimal = $conn->prepare($sqlTamañoAnimal);
+    $stmtTamañoAnimal->bindParam(':especieId', $especieId);
+    $stmtTamañoAnimal->execute();
+    $tamaños = $stmtTamañoAnimal->fetchAll(PDO::FETCH_COLUMN);
+
     // Consulta para obtener todos los animales de la especie seleccionada
     $sqlAnimales = "SELECT * FROM animal WHERE id_especie = :especieId";
+
+    if (isset($_GET['raza']) && !empty($_GET['raza'])) {
+        $sqlAnimales .= " AND raza = :raza";
+    }
+
+    if (isset($_GET['tamano']) && !empty($_GET['tamano'])) {
+        $sqlAnimales .= " AND tamano = :tamano";
+    }
+
+    if (isset($_GET['edad']) && !empty($_GET['edad'])) {
+        $sqlAnimales .= " AND edad = :edad";
+    }
+
+    if (isset($_GET['sexo']) && !empty($_GET['sexo'])) {
+        $sqlAnimales .= " AND sexo = :sexo";
+    }
+
     $stmtAnimales = $conn->prepare($sqlAnimales);
     $stmtAnimales->bindParam(':especieId', $especieId);
+
+    if (isset($_GET['raza']) && !empty($_GET['raza'])) {
+        $stmtAnimales->bindParam(':raza', $_GET['raza']);
+    }
+
+    if (isset($_GET['tamano']) && !empty($_GET['tamano'])) {
+        $stmtAnimales->bindParam(':tamano', $_GET['tamano']);
+    }
+
+    if (isset($_GET['edad']) && is_numeric($_GET['edad'])) {
+        $stmtAnimales->bindParam(':edad', $_GET['edad']);
+    }
+
+    if (isset($_GET['sexo']) && !empty($_GET['sexo'])) {
+        $stmtAnimales->bindParam(':sexo', $_GET['sexo']);
+    }
+
     $stmtAnimales->execute();
     $animales = $stmtAnimales->fetchAll(PDO::FETCH_ASSOC);
 } else {
@@ -23,7 +76,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página Adoptar</title>
+    <title>Página Animales</title>
     <link rel="stylesheet" href="./css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
@@ -40,12 +93,13 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                         // Si el usuario está autenticado, procesar la adopción utilizando AJAX
                         $.ajax({
                             url: 'procesar_adopcion.php', // Reemplaza 'procesar_adopcion.php' con tu script de procesamiento de adopción
-                            type: 'POST',
+                            type: 'GET',
                             data: {
                                 id_animal: idAnimal
                             },
                             success: function(response) {
-                                alert(response); // Puedes mostrar un mensaje al usuario, por ejemplo, "Adopción exitosa"
+                                // alert(response); // Puedes mostrar un mensaje al usuario, por ejemplo, "Adopción exitosa"
+                                window.location.href = './procesar_adopcion.php?id_animal=' + idAnimal;
                             }
                         });
                     } else {
@@ -69,34 +123,93 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="./index.php">Inicio</a>
+                            <a class="nav-link" aria-current="page" href="./index.php">Inicio</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Sobre nosotros</a>
+                            <a class="nav-link" href="./sobreNosotros.php">Sobre nosotros</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="./adoptar.php">Adoptar</a>
+                            <a class="nav-link active" href="./adoptar.php">Adoptar</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Colabora</a>
+                            <a class="nav-link" href="./colabora.php">Colabora</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="./contactenos.php">Contáctenos</a>
                         </li>
                     </ul>
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link" href="usuario/login.php"><i class="fas fa-sign-in-alt"></i> Iniciar sesión</a>
-                        </li>
+                    <ul class="navbar-nav ml-auto">
+                        <?php if (isset($usuario)) : ?>
+                            <!-- Si hay una sesión activa, muestra el logotipo de usuario y la opción de cerrar sesión -->
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="usuarioDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-user"></i> <?php echo $usuario; ?>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="usuarioDropdown">
+                                    <a class="dropdown-item" href="#">Mi Perfil</a>
+                                    <a class="dropdown-item" href="#">Configuración</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="./usuario/logout.php">Cerrar Sesión</a>
+                                </div>
+                            </li>
+                        <?php else : ?>
+                            <!-- Si no hay una sesión activa, muestra la opción de iniciar sesión -->
+                            <li class="nav-item">
+                                <a class="nav-link" href="usuario/login.php"><i class="fas fa-sign-in-alt"></i> Iniciar sesión</a>
+                            </li>
+                        <?php endif; ?>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
     <section class="container mt-4">
+        <h1 class="text-center text-warning fw-bold mb-3">Filtrar Animales</h1>
+        <form action="animales.php" method="get">
+            <input type="hidden" name="id" value="<?= $especieId ?>">
+            <div class="row mb-3">
+                <div class="col-md-3">
+                    <label for="raza">Raza:</label>
+                    <select class="form-select" id="raza" name="raza">
+                        <option value="">Todas las razas</option>
+                        <?php foreach ($razas as $raza) : ?>
+                            <option value="<?= $raza ?>"> <?= $raza ?> </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="tamano">Tamaño:</label>
+                    <select class="form-select" id="tamano" name="tamano">
+                        <option value="">Todos los tamaños</option>
+                        <?php foreach ($tamaños as $tamano) : ?>
+                            <option value="<?= $tamano ?>"> <?= $tamano ?> </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="edad">Edad:</label>
+                    <input type="number" class="form-control" id="edad" name="edad" placeholder="Edad">
+                </div>
+                <div class="col-md-3">
+                    <label for="sexo">Sexo:</label>
+                    <select class="form-select" id="sexo" name="sexo">
+                        <option value="">Todos los sexos</option>
+                        <option value="Macho">Macho</option>
+                        <option value="Hembra">Hembra</option>
+                    </select>
+                </div>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+            </div>
+        </form>
         <h1 class="text-center text-warning fw-bold mb-3">Animales de la especie seleccionada</h1>
         <div class="row">
             <?php
+            $stmtAnimalesAdoptados = $conn->prepare("SELECT id_animal FROM adopciones");
+            $stmtAnimalesAdoptados->execute();
+            $animalesAdoptados = $stmtAnimalesAdoptados->fetchAll(PDO::FETCH_COLUMN);
+
             // Mostrar los animales de la especie seleccionada
             if (!empty($animales)) {
                 foreach ($animales as $animal) {
@@ -106,7 +219,9 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                     echo '<div class="card-body text-center">';
                     echo '<h5 class="card-title">' . $animal["nombre"] . '</h5>';
                     echo '<p class="card-text">' . $animal["informacion"] . '</p>';
-                    echo '<button class="btn btn-primary" onclick="adoptarAnimal(' . $animal["id"] . ')">Adoptar</button>';
+                    // Verificar si el ID del animal está en la lista de animales adoptados
+                    $disabled = in_array($animal['id'], $animalesAdoptados) ? 'disabled' : '';
+                    echo '<button class="btn btn-primary" onclick="adoptarAnimal(' . $animal["id"] . ')" ' . $disabled . '>Adoptar</button>';
                     echo '</div>';
                     echo '</div>';
                     echo '</div>';

@@ -1,5 +1,40 @@
 <?php
 include_once "../Conexion.php";
+session_start();
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (!empty($_POST['usuario']) && !empty($_POST['password'])) {
+        $usuario = $_POST['usuario'];
+        $password = $_POST['password'];
+
+        $stmtUsuario = $conn->prepare("SELECT * FROM usuarios WHERE usuario = :usuario");
+        $stmtUsuario->execute(array(':usuario' => $usuario));
+        $row = $stmtUsuario->fetch(PDO::FETCH_ASSOC);
+        if ($row) {
+            // Verificar si la contraseña propocionada es correcta
+            if (password_verify($password, $row['password'])) {
+                $_SESSION['id_usuario'] = $row['id'];
+                $_SESSION['rol'] = $row['rol'];
+                $_SESSION['usuario'] = $row['usuario'];
+                $_SESSION['password'] = $row['password'];
+                header("Location: ../index.php");
+                exit();
+            } else {
+                echo '<div class="alert alert-danger alert-dismissible fade show d-flex justify-content-between align-items-center" role="alert">';
+                echo 'La contraseña proporcionada es incorrecta.';
+                echo '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+                echo '</div>';
+            }
+        } else {
+            echo '<div class="alert alert-danger alert-dismissible fade show d-flex justify-content-between align-items-center" role="alert">';
+                echo 'El nombre de usuario no existe.';
+                echo '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+                echo '</div>';
+        }
+    }
+}
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,10 +60,10 @@ include_once "../Conexion.php";
                 </div>
                 <form class="" action="" method="post">
                     <div class="mb-3">
-                        <input type="text" class="form-control" id="inputUsuario" placeholder="Usuario">
+                        <input type="text" class="form-control" id="inputUsuario" placeholder="Usuario" name="usuario">
                     </div>
                     <div class="mb-3">
-                        <input type="password" class="form-control" id="inputContraseña" placeholder="Contraseña">
+                        <input type="password" class="form-control" id="inputContraseña" placeholder="Contraseña" name="password">
                     </div>
                     <button type="submit" class="btn btn-primary" id="botonLogin">Iniciar Sesión</button>
                 </form>
