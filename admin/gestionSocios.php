@@ -23,7 +23,7 @@ $socios = $stmtSocios->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página Gestión De Animales</title>
+    <title>Página Gestión De Socios</title>
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
     <link rel="stylesheet" href="../style.css">
@@ -53,7 +53,10 @@ $socios = $stmtSocios->fetchAll(PDO::FETCH_ASSOC);
                             <a class="nav-link" aria-current="page" href="./gestionDonativos.php">Gestión Donativos</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" aria-current="page" href="./gestionUsuario.php">Gestión Usuarios</a>
+                            <a class="nav-link" aria-current="page" href="./gestionUsuarios.php">Gestión Usuarios</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="./gestionAdopciones.php">Gestión Adopciones</a>
                         </li>
                     </ul>
                     <ul class="navbar-nav ml-auto">
@@ -76,52 +79,48 @@ $socios = $stmtSocios->fetchAll(PDO::FETCH_ASSOC);
 
     <div class="container mt-5">
         <h1 class="text-center mb-4">Gestión de Socios</h1>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Apellidos</th>
-                    <th>DNI</th>
-                    <th>Membresía</th>
-                    <th>Importe</th>
-                    <th>Fecha de Ingreso</th>
-                    <th>IBAN</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($socios as $socio) : ?>
-                    <tr>
-                        <td><?php echo $socio['id']; ?></td>
-                        <td><?php echo $socio['nombre']; ?></td>
-                        <td><?php echo $socio['apellidos']; ?></td>
-                        <td><?php echo $socio['dni']; ?></td>
-                        <td><?php echo $socio['membresia']; ?></td>
-                        <td><?php echo $socio['importe']; ?></td>
-                        <td><?php echo $socio['fecha_ingreso']; ?></td>
-                        <td><?php echo $socio['iban']; ?></td>
-                        <td>
-                            <a href="eliminar_socio.php?id=<?php echo $socio['id']; ?>" class="btn btn-danger btn-sm mb-1">Eliminar</a>
-                            <a href="modificar_socio.php?id=<?php echo $socio['id']; ?>" class="btn btn-warning btn-sm">Modificar</a>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    </div>
-
-
-    <!------------------------------ FOOTER -------------------------------->
-    <footer class="text-center text-white fixed-bottom" style="background-color: #6db1bf;">             
-        <!-- Copyright -->
-        <div class="text-center p-3" id="footerPart2">
-            © 2023 Copyright: Esperanza Animal
+        <?php if (empty($socios)) : ?>
+        <div class="alert alert-info" role="alert">
+            No hay socios en la base de datos.
         </div>
-    </footer>
-
-
-
+        <?php else : ?>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Apellidos</th>
+                        <th>DNI</th>
+                        <th>Membresía</th>
+                        <th>Importe</th>
+                        <th>Fecha de Ingreso</th>
+                        <th>IBAN</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($socios as $socio) : ?>
+                        <tr>
+                            <td><?php echo $socio['id']; ?></td>
+                            <td><?php echo $socio['nombre']; ?></td>
+                            <td><?php echo $socio['apellidos']; ?></td>
+                            <td><?php echo $socio['dni']; ?></td>
+                            <td><?php echo $socio['membresia']; ?></td>
+                            <td><?php echo $socio['importe']; ?></td>
+                            <td><?php echo $socio['fecha_ingreso']; ?></td>
+                            <td><?php echo $socio['iban']; ?></td>
+                            <td>
+                                <a href="eliminar_socio.php?id=<?php echo $socio['id']; ?>" class="btn btn-danger btn-sm mb-1">Eliminar</a>
+                                <a href="modificar_socio.php?id=<?php echo $socio['id']; ?>" class="btn btn-warning btn-sm">Modificar</a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php endif; ?>
+    </div>
 </body>
 
 </html>

@@ -69,7 +69,10 @@ if (isset($_GET['buscar'])) {
                             <a class="nav-link" aria-current="page" href="./gestionDonativos.php">Gestión Donativos</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" aria-current="page" href="./gestionUsuario.php">Gestión Usuarios</a>
+                            <a class="nav-link" aria-current="page" href="./gestionUsuarios.php">Gestión Usuarios</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="./gestionAdopciones.php">Gestión Adopciones</a>
                         </li>
                     </ul>
                     <ul class="navbar-nav ml-auto">
@@ -132,7 +135,7 @@ if (isset($_GET['buscar'])) {
                                         <td>
                                             <a href="modificar_animal.php?id=<?php echo $animal['id']; ?>" class="btn btn-warning btn-sm">Modificar</a>
 
-                                            <a href="eliminar_animal.php?id=<?php echo $animal['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar este animal?')">Eliminar</a>
+                                            <a href="eliminar_animal.php?id=<?php echo $animal['id']; ?>" class="btn btn-danger btn-sm" >Eliminar</a>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -182,17 +185,6 @@ if (isset($_GET['buscar'])) {
             </div>
         </div>
     </section>
-
-    <!------------------------------ FOOTER -------------------------------->
-    <footer class="text-center text-white fixed-bottom" style="background-color: #6db1bf;">             
-        <!-- Copyright -->
-        <div class="text-center p-3" id="footerPart2">
-            © 2023 Copyright: Esperanza Animal
-        </div>
-    </footer>
-
-
-
 </body>
 
 </html>

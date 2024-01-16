@@ -6,11 +6,14 @@ if (!isset($_SESSION['usuario'])) {
     header("Location: usuario/login.php");
     exit();
 }
+if (isset($_SESSION['usuario'])) {
+    $usuario = $_SESSION['usuario'];
+}
 // Obtener el ID del animal de la URL
 $idAnimal = isset($_GET['id_animal']) ? $_GET['id_animal'] : null;
 $idUsuario = isset($_SESSION['id_usuario']) ? $_SESSION['id_usuario'] : null;
-var_dump($idUsuario);
-var_dump($idAnimal);
+// var_dump($idUsuario);
+// var_dump($idAnimal);
 
 if (isset($_POST['botonAdoptar'])) {
 
@@ -21,7 +24,7 @@ if (isset($_POST['botonAdoptar'])) {
         $stmtComprobarAdoptante->execute();
         $adoptanteExiste = $stmtComprobarAdoptante->fetchColumn();
 
-        // Si el adoptante no existe, puedes insertarlo en la tabla de adoptantes
+        // Si el adoptante no existe, se insertara en la tabla de adoptantes
         if (!$adoptanteExiste) {
             $sqlInsertarAdoptante = "INSERT INTO adoptante (id_usuario) VALUES (:id_usuario)";
             $stmtInsertarAdoptante = $conn->prepare($sqlInsertarAdoptante);
@@ -40,35 +43,29 @@ if (isset($_POST['botonAdoptar'])) {
         $idAdoptante = $stmtComprobarAdoptante->fetchColumn();
 
         if (!$idAdoptante) {
-            // El adoptante no existe, maneja este caso según tus necesidades
             echo "Error: El adoptante no existe";
             exit();  // Terminar la ejecución del script
         }
 
         // Obtener la fecha actual de la adopción
         $fechaAdopcion = date("Y-m-d");
-
+        $precioAdopcion = "30";
         // Insertar la adopción en la tabla de adopciones
-        $sqlAdopcion = "INSERT INTO adopciones (id_adoptante, id_animal, fecha_adopcion) VALUES (:id_adoptante, :id_animal, :fecha_adopcion)";
+        $sqlAdopcion = "INSERT INTO adopciones (id_adoptante, id_animal, fecha_adopcion, precio_adopcion) VALUES (:id_adoptante, :id_animal, :fecha_adopcion, :precioAdopcion)";
         $stmtAdopcion = $conn->prepare($sqlAdopcion);
         $stmtAdopcion->bindParam(':id_adoptante', $idAdoptante);
         $stmtAdopcion->bindParam(':id_animal', $idAnimal);
         $stmtAdopcion->bindParam(':fecha_adopcion', $fechaAdopcion);
+        $stmtAdopcion->bindParam(':precioAdopcion', $precioAdopcion);
         $stmtAdopcion->execute();
-        header("Location: index.php");
+        // header("Location: adoptar.php");
+        $registroAdopcion='La adopción ha sido realizada correctamente!';
         
     } else {
-        // Manejar el caso en que el usuario no está autenticado o el ID del animal no es válido
         echo "Error: El usuario no está autenticado o el ID del animal no es válido";
     }
-    
-       
 }
 ?>
-
-
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -76,12 +73,13 @@ if (isset($_POST['botonAdoptar'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página Adoptar</title>
+    <title>Página procesar adopción</title>
     <link rel="stylesheet" href="./css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <script src="./js/bootstrap.bundle.min.js"></script>
     <script src="./jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <script>
 
@@ -98,25 +96,35 @@ if (isset($_POST['botonAdoptar'])) {
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="./index.php">Inicio</a>
+                            <a class="nav-link" aria-current="page" href="./index.php">Inicio</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Sobre nosotros</a>
+                            <a class="nav-link" href="./sobreNosotros.php">Sobre nosotros</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="./adoptar.php">Adoptar</a>
+                            <a class="nav-link active" href="./adoptar.php">Adoptar</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Colabora</a>
+                            <a class="nav-link" href="./colabora.php">Colabora</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="./contactenos.php">Contáctenos</a>
                         </li>
                     </ul>
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link" href="usuario/login.php"><i class="fas fa-sign-in-alt"></i> Iniciar sesión</a>
-                        </li>
+                    <ul class="navbar-nav ml-auto">
+                        <?php if (isset($usuario)) : ?>
+                            <!-- Si hay una sesión activa, muestra el logotipo de usuario y la opción de cerrar sesión -->
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="usuarioDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-user"></i> <?php echo $usuario; ?>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="usuarioDropdown">
+                                    <a class="dropdown-item" href="./usuario/perfil_usuario.php">Mi Perfil</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="./usuario/logout.php">Cerrar Sesión</a>
+                                </div>
+                            </li>
+                        <?php endif; ?>
                     </ul>
                 </div>
             </div>
@@ -165,15 +173,24 @@ if (isset($_POST['botonAdoptar'])) {
                         <input type="text" class="form-control" id="email" name="email" value="<?php echo $datosAdoptante['email']; ?>" readonly>
                     </div>
 
-                    <!-- Agregar campos ocultos para enviar el ID del usuario y del animal al procesar la adopción -->
                     <input type="hidden" name="id_usuario" value="<?php echo $idUsuario; ?>">
                     <input type="hidden" name="id_animal" value="<?php echo $idAnimal; ?>">
 
                     <button type="submit" class="btn btn-primary" name="botonAdoptar" id="botonAdoptar">Adoptar</button>
+                    <?php if (!empty($registroAdopcion)) : ?>
+                    <script>
+                        Swal.fire({
+                            title: '¡Adopción realizada!',
+                            text: '<?php echo $registroAdopcion; ?>',
+                            icon: 'success',
+                            confirmButtonText: 'Ok'
+                        }).then(() => {
+                            window.location.href = 'adoptar.php';
+                        });
+                    </script>
+                <?php endif; ?>
                 </form>
-
             </div>
-
             <div class="col-md-8">
                 <h2>Datos del Animal</h2>
                 <?php
@@ -262,10 +279,11 @@ if (isset($_POST['botonAdoptar'])) {
                 <div class="col-lg-4">
                     <h4 class="">Páginas</h4>
                     <ul class="list-unstyled ">
-                        <li><a href="#" class="text-white text-decoration-none"><i class="fas fa-home me-3"></i> Inicio</a></li>
-                        <li><a href="#" class="text-white text-decoration-none"><i class="fas fa-paw me-3"></i> Adopciones</a></li>
-                        <li><a href="#" class="text-white text-decoration-none"><i class="fas fa-donate me-3"></i> Donaciones</a></li>
-                        <li><a href="#" class="text-white text-decoration-none"><i class="fas fa-hands-helping me-3"></i> Voluntariado</a></li>
+                        <li><a href="./index.php" class="text-white text-decoration-none"><i class="fas fa-home me-3"></i> Inicio</a></li>
+                        <li><a href="./sobreNosotros.php" class="text-white text-decoration-none"><i class="fas fa-info-circle me-3"></i> Sobre Nosotros</a></li>
+                        <li><a href="./adoptar.php" class="text-white text-decoration-none"><i class="fas fa-paw me-3"></i> Adoptar</a></li>
+                        <li><a href="./colabora.php" class="text-white text-decoration-none"><i class="fas fa-hands-helping me-3"></i> Colabora</a></li>
+                        <li><a href="./contactenos.php" class="text-white text-decoration-none"><i class="fas fa-envelope me-3"></i> Contáctenos</a></li>
                     </ul>
                 </div>
                 <!-- Información de contacto -->

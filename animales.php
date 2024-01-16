@@ -3,7 +3,7 @@ include_once "Conexion.php";
 session_start();
 if (isset($_SESSION['usuario'])) {
     $usuario = $_SESSION['usuario'];
-  }
+}
 
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     $especieId = $_GET['id'];
@@ -63,8 +63,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     $stmtAnimales->execute();
     $animales = $stmtAnimales->fetchAll(PDO::FETCH_ASSOC);
 } else {
-    // Manejo de caso donde no se proporciona el parámetro id
-    header("Location: index.php"); // Redirigir a la página principal si no se proporciona id
+    header("Location: index.php");
     exit();
 }
 
@@ -86,25 +85,23 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
         function adoptarAnimal(idAnimal) {
             // Verificar la sesión del usuario utilizando AJAX
             $.ajax({
-                url: 'usuario/verificar_sesion.php', // Reemplaza 'verificar_sesion.php' con tu script de verificación de sesión
+                url: 'usuario/verificar_sesion.php',
                 type: 'GET',
                 success: function(response) {
                     if (response === 'autenticado') {
-                        // Si el usuario está autenticado, procesar la adopción utilizando AJAX
                         $.ajax({
-                            url: 'procesar_adopcion.php', // Reemplaza 'procesar_adopcion.php' con tu script de procesamiento de adopción
+                            url: 'procesar_adopcion.php',
                             type: 'GET',
                             data: {
                                 id_animal: idAnimal
                             },
                             success: function(response) {
-                                // alert(response); // Puedes mostrar un mensaje al usuario, por ejemplo, "Adopción exitosa"
                                 window.location.href = './procesar_adopcion.php?id_animal=' + idAnimal;
                             }
                         });
                     } else {
                         // Si el usuario no está autenticado, redirige a la página de inicio de sesión
-                        window.location.href = 'usuario/login.php'; // Reemplaza 'login.php' con tu página de inicio de sesión
+                        window.location.href = 'usuario/login.php';
                     }
                 }
             });
@@ -140,20 +137,17 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                     </ul>
                     <ul class="navbar-nav ml-auto">
                         <?php if (isset($usuario)) : ?>
-                            <!-- Si hay una sesión activa, muestra el logotipo de usuario y la opción de cerrar sesión -->
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="usuarioDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="fas fa-user"></i> <?php echo $usuario; ?>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="usuarioDropdown">
-                                    <a class="dropdown-item" href="#">Mi Perfil</a>
-                                    <a class="dropdown-item" href="#">Configuración</a>
+                                    <a class="dropdown-item" href="./usuario/perfil_usuario.php">Mi Perfil</a>
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="./usuario/logout.php">Cerrar Sesión</a>
                                 </div>
                             </li>
                         <?php else : ?>
-                            <!-- Si no hay una sesión activa, muestra la opción de iniciar sesión -->
                             <li class="nav-item">
                                 <a class="nav-link" href="usuario/login.php"><i class="fas fa-sign-in-alt"></i> Iniciar sesión</a>
                             </li>
@@ -173,7 +167,8 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                     <select class="form-select" id="raza" name="raza">
                         <option value="">Todas las razas</option>
                         <?php foreach ($razas as $raza) : ?>
-                            <option value="<?= $raza ?>"> <?= $raza ?> </option>
+                            <?php $selected = (isset($_GET['raza']) && $_GET['raza'] == $raza) ? 'selected' : ''; ?>
+                            <option value="<?= $raza ?>" <?= $selected ?>> <?= $raza ?> </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -182,20 +177,21 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                     <select class="form-select" id="tamano" name="tamano">
                         <option value="">Todos los tamaños</option>
                         <?php foreach ($tamaños as $tamano) : ?>
-                            <option value="<?= $tamano ?>"> <?= $tamano ?> </option>
+                            <?php $selected = (isset($_GET['tamano']) && $_GET['tamano'] == $tamano) ? 'selected' : ''; ?>
+                            <option value="<?= $tamano ?>" <?= $selected ?>> <?= $tamano ?> </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
                 <div class="col-md-3">
                     <label for="edad">Edad:</label>
-                    <input type="number" class="form-control" id="edad" name="edad" placeholder="Edad">
+                    <input type="number" class="form-control" id="edad" name="edad" min="0" placeholder="Edad" value="<?= isset($_GET['edad']) ? $_GET['edad'] : '' ?>">
                 </div>
                 <div class="col-md-3">
                     <label for="sexo">Sexo:</label>
                     <select class="form-select" id="sexo" name="sexo">
                         <option value="">Todos los sexos</option>
-                        <option value="Macho">Macho</option>
-                        <option value="Hembra">Hembra</option>
+                        <option value="Macho" <?= (isset($_GET['sexo']) && $_GET['sexo'] == 'Macho') ? 'selected' : '' ?>>Macho</option>
+                        <option value="Hembra" <?= (isset($_GET['sexo']) && $_GET['sexo'] == 'Hembra') ? 'selected' : '' ?>>Hembra</option>
                     </select>
                 </div>
             </div>
@@ -264,10 +260,11 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
                 <div class="col-lg-4">
                     <h4 class="">Páginas</h4>
                     <ul class="list-unstyled ">
-                        <li><a href="#" class="text-white text-decoration-none"><i class="fas fa-home me-3"></i> Inicio</a></li>
-                        <li><a href="#" class="text-white text-decoration-none"><i class="fas fa-paw me-3"></i> Adopciones</a></li>
-                        <li><a href="#" class="text-white text-decoration-none"><i class="fas fa-donate me-3"></i> Donaciones</a></li>
-                        <li><a href="#" class="text-white text-decoration-none"><i class="fas fa-hands-helping me-3"></i> Voluntariado</a></li>
+                        <li><a href="./index.php" class="text-white text-decoration-none"><i class="fas fa-home me-3"></i> Inicio</a></li>
+                        <li><a href="./sobreNosotros.php" class="text-white text-decoration-none"><i class="fas fa-info-circle me-3"></i> Sobre Nosotros</a></li>
+                        <li><a href="./adoptar.php" class="text-white text-decoration-none"><i class="fas fa-paw me-3"></i> Adoptar</a></li>
+                        <li><a href="./colabora.php" class="text-white text-decoration-none"><i class="fas fa-hands-helping me-3"></i> Colabora</a></li>
+                        <li><a href="./contactenos.php" class="text-white text-decoration-none"><i class="fas fa-envelope me-3"></i> Contáctenos</a></li>
                     </ul>
                 </div>
                 <!-- Información de contacto -->
@@ -287,9 +284,6 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             © 2023 Copyright: Esperanza Animal
         </div>
     </footer>
-
-
-
 </body>
 
 </html>

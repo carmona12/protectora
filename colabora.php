@@ -12,7 +12,7 @@ if (isset($_SESSION['usuario'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página Contáctenos</title>
+    <title>Página Colabora</title>
     <link rel="stylesheet" href="./css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
@@ -48,20 +48,17 @@ if (isset($_SESSION['usuario'])) {
 
                     <ul class="navbar-nav ml-auto">
                         <?php if (isset($usuario)) : ?>
-                            <!-- Si hay una sesión activa, muestra el logotipo de usuario y la opción de cerrar sesión -->
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="usuarioDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="fas fa-user"></i> <?php echo $usuario; ?>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="usuarioDropdown">
-                                    <a class="dropdown-item" href="#">Mi Perfil</a>
-                                    <a class="dropdown-item" href="#">Configuración</a>
+                                    <a class="dropdown-item" href="./usuario/perfil_usuario.php">Mi Perfil</a>
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="./usuario/logout.php">Cerrar Sesión</a>
                                 </div>
                             </li>
                         <?php else : ?>
-                            <!-- Si no hay una sesión activa, muestra la opción de iniciar sesión -->
                             <li class="nav-item">
                                 <a class="nav-link" href="usuario/login.php"><i class="fas fa-sign-in-alt"></i> Iniciar sesión</a>
                             </li>
@@ -73,77 +70,41 @@ if (isset($_SESSION['usuario'])) {
     </header>
 
     <div class="container mt-5 mb-4">
-    <div class="row row-cols-1 row-cols-md-3 g-4 align-items-center">
-        <!-- Sección Socio -->
-        <div class="col-md-4 mb-4">
-            <div class="text-center">
-                <h4>Únete como Socio: Construyamos Esperanza Animal Juntos</h4>
-                <img src="./imagenes/colabora/hazteSocio.png" alt="Hazte Socio" class="rounded-circle img-fluid mb-3">
-                <p class="lead">Sé parte de nuestra comunidad como socio y apoya a los animales necesitados. Contribuye financieramente, participa en eventos exclusivos y forma parte de una red dedicada al bienestar animal. Tu ayuda construye puentes hacia un futuro más compasivo. ¡Hazte socio y sé el cambio!</p>
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <a href="<?php 
-                            //Si no ha iniciado sesión lo enviamos al login
-                            if(empty($usuario)){
-                                echo "usuario/login.php";
-                             //Si ha iniciado sesión le dejamos seguir
-                            }else{
-                                echo "socios.php";
-                            }
-                        ?>" class="btn btn-primary">Hacerme Socio</a>
+        <div class="row row-cols-1 row-cols-md-3 g-4 align-items-stretch">
+            <div class="col-md-4 mb-4">
+                <div class="text-center h-100">
+                    <h4>Únete como Socio: Construyamos Esperanza Animal Juntos</h4>
+                    <img src="./imagenes/colabora/hazteSocio.png" alt="Hazte Socio" class="rounded-circle img-fluid mb-3">
+                    <p class="lead">Sé parte de nuestra comunidad como socio y apoya a los animales necesitados. Contribuye financieramente, participa en eventos exclusivos y forma parte de una red dedicada al bienestar animal. Tu ayuda construye puentes hacia un futuro más compasivo. ¡Hazte socio y sé el cambio!</p>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="<?php echo empty($usuario) ? 'usuario/login.php' : 'socios.php'; ?>" class="btn btn-primary">Hacerme Socio</a>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Sección Voluntario -->
-        <div class="col-md-4 mb-4">
-            <div class="text-center">
-                <h4>Únete a Nosotros: Sé Voluntario en Esperanza Animal</h4>
-                <img src="./imagenes/colabora/hazteVoluntario.jpg" alt="Hazte Voluntario" class="rounded-circle img-fluid mb-3">
-                <p class="lead">Haz una diferencia tangible en la vida de los animales siendo voluntario en nuestra protectora. Participa en eventos, cuida a nuestros amigos peludos, y comparte el amor por los animales. Tu tiempo cuenta y puede cambiar vidas. ¡Haz clic para ser voluntario y forma parte de nuestro compromiso con el bienestar animal!</p>
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <a href="<?php 
-                            //Si no ha iniciado sesión lo enviamos al login
-                            if(empty($usuario)){
-                                echo "usuario/login.php";
-                             //Si ha iniciado sesión le dejamos seguir
-                            }else{
-                                echo "voluntarios.php";
-                            }
-                        ?>" class="btn btn-primary">Hacerme Voluntario</a>
+            <div class="col-md-4 mb-4">
+                <div class="text-center h-100">
+                    <h4>Únete a Nosotros: Sé Voluntario en Esperanza Animal</h4>
+                    <img src="./imagenes/colabora/hazteVoluntario.jpg" alt="Hazte Voluntario" class="rounded-circle img-fluid mb-3">
+                    <p class="lead">Haz una diferencia tangible en la vida de los animales siendo voluntario en nuestra protectora. Participa en eventos, cuida a nuestros amigos peludos, y comparte el amor por los animales. Tu tiempo cuenta y puede cambiar vidas. ¡Haz clic para ser voluntario y forma parte de nuestro compromiso con el bienestar animal!</p>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="<?php echo empty($usuario) ? 'usuario/login.php' : 'voluntarios.php'; ?>" class="btn btn-primary">Hacerme Voluntario</a>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Sección Donativos -->
-        <div class="col-md-4 mb-4">
-            <div class="text-center">
-                <h4>Apoya con Donativos: Construyamos Juntos el Bienestar Animal</h4>
-                <img src="./imagenes/colabora/donativo.jpg" alt="Donativo" class="rounded-circle img-fluid mb-3">
-                <p class="lead">Contribuye a nuestra causa donando y forma parte del cambio positivo en la vida de los animales necesitados. Cada donativo, sin importar el tamaño, construye un futuro más esperanzador. Tu generosidad es clave para brindar amor y cuidado a nuestros amigos peludos. ¡Haz clic para donar hoy y sé parte de nuestro compromiso con el bienestar animal! Tu contribución hace la diferencia.</p>
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <a href="<?php 
-                            //Si no ha iniciado sesión lo enviamos al login
-                            if(empty($usuario)){
-                                echo "usuario/login.php";
-                             //Si ha iniciado sesión le dejamos seguir
-                            }else{
-                                echo "donativos.php";
-                            }
-                        ?>" class="btn btn-primary">Donar</a>
+            <div class="col-md-4 mb-4">
+                <div class="text-center h-100">
+                    <h4>Apoya con Donativos: Construyamos Juntos el Bienestar Animal</h4>
+                    <img src="./imagenes/colabora/donativos2.jpg" alt="Donativo" class="rounded-circle img-fluid mb-3">
+                    <p class="lead">Contribuye a nuestra causa donando y forma parte del cambio positivo en la vida de los animales necesitados. Cada donativo, sin importar el tamaño, construye un futuro más esperanzador. Tu generosidad es clave para brindar amor y cuidado a nuestros amigos peludos. ¡Haz clic para donar hoy y sé parte de nuestro compromiso con el bienestar animal! Tu contribución hace la diferencia.</p>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="<?php echo empty($usuario) ? 'usuario/login.php' : 'donativos.php'; ?>" class="btn btn-primary">Donar</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-
-
-
-
-
-
-
-
-
 
     <!------------------------------ FOOTER -------------------------------->
     <footer class="text-center text-white" style="background-color: #6db1bf;">
@@ -175,10 +136,11 @@ if (isset($_SESSION['usuario'])) {
                 <div class="col-lg-4">
                     <h4 class="">Páginas</h4>
                     <ul class="list-unstyled ">
-                        <li><a href="#" class="text-white text-decoration-none"><i class="fas fa-home me-3"></i> Inicio</a></li>
-                        <li><a href="#" class="text-white text-decoration-none"><i class="fas fa-paw me-3"></i> Adopciones</a></li>
-                        <li><a href="#" class="text-white text-decoration-none"><i class="fas fa-donate me-3"></i> Donaciones</a></li>
-                        <li><a href="#" class="text-white text-decoration-none"><i class="fas fa-hands-helping me-3"></i> Voluntariado</a></li>
+                        <li><a href="./index.php" class="text-white text-decoration-none"><i class="fas fa-home me-3"></i> Inicio</a></li>
+                        <li><a href="./sobreNosotros.php" class="text-white text-decoration-none"><i class="fas fa-info-circle me-3"></i> Sobre Nosotros</a></li>
+                        <li><a href="./adoptar.php" class="text-white text-decoration-none"><i class="fas fa-paw me-3"></i> Adoptar</a></li>
+                        <li><a href="./colabora.php" class="text-white text-decoration-none"><i class="fas fa-hands-helping me-3"></i> Colabora</a></li>
+                        <li><a href="./contactenos.php" class="text-white text-decoration-none"><i class="fas fa-envelope me-3"></i> Contáctenos</a></li>
                     </ul>
                 </div>
                 <!-- Información de contacto -->

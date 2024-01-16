@@ -49,12 +49,11 @@ if (isset($_SESSION['usuario'])) {
                             <a class="nav-link" aria-current="page" href="./gestionDonativos.php">Gestión Donativos</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" aria-current="page" href="./gestionUsuario.php">Gestión Usuarios</a>
+                            <a class="nav-link" aria-current="page" href="./gestionUsuarios.php">Gestión Usuarios</a>
                         </li>
                     </ul>
                     <ul class="navbar-nav ml-auto">
                         <?php if (isset($usuario)) : ?>
-                            <!-- Si hay una sesión activa, muestra el logotipo de usuario y la opción de cerrar sesión -->
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="usuarioDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="fas fa-user"></i> <?php echo $usuario; ?>

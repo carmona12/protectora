@@ -17,7 +17,6 @@ if (isset($_SESSION['usuario'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <script src="./js/bootstrap.bundle.min.js"></script>
-    <script src="contactenos.js"></script>
 </head>
 
 <body class="bodyContacto">
@@ -49,20 +48,17 @@ if (isset($_SESSION['usuario'])) {
 
                     <ul class="navbar-nav ml-auto">
                         <?php if (isset($usuario)) : ?>
-                            <!-- Si hay una sesión activa, muestra el logotipo de usuario y la opción de cerrar sesión -->
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="usuarioDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="fas fa-user"></i> <?php echo $usuario; ?>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="usuarioDropdown">
-                                    <a class="dropdown-item" href="#">Mi Perfil</a>
-                                    <a class="dropdown-item" href="#">Configuración</a>
+                                    <a class="dropdown-item" href="./usuario/perfil_usuario.php">Mi Perfil</a>
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="./usuario/logout.php">Cerrar Sesión</a>
                                 </div>
                             </li>
                         <?php else : ?>
-                            <!-- Si no hay una sesión activa, muestra la opción de iniciar sesión -->
                             <li class="nav-item">
                                 <a class="nav-link" href="usuario/login.php"><i class="fas fa-sign-in-alt"></i> Iniciar sesión</a>
                             </li>
@@ -180,10 +176,11 @@ if (isset($_SESSION['usuario'])) {
                 <div class="col-lg-4">
                     <h4 class="">Páginas</h4>
                     <ul class="list-unstyled ">
-                        <li><a href="#" class="text-white text-decoration-none"><i class="fas fa-home me-3"></i> Inicio</a></li>
-                        <li><a href="#" class="text-white text-decoration-none"><i class="fas fa-paw me-3"></i> Adopciones</a></li>
-                        <li><a href="#" class="text-white text-decoration-none"><i class="fas fa-donate me-3"></i> Donaciones</a></li>
-                        <li><a href="#" class="text-white text-decoration-none"><i class="fas fa-hands-helping me-3"></i> Voluntariado</a></li>
+                        <li><a href="./index.php" class="text-white text-decoration-none"><i class="fas fa-home me-3"></i> Inicio</a></li>
+                        <li><a href="./sobreNosotros.php" class="text-white text-decoration-none"><i class="fas fa-info-circle me-3"></i> Sobre Nosotros</a></li>
+                        <li><a href="./adoptar.php" class="text-white text-decoration-none"><i class="fas fa-paw me-3"></i> Adoptar</a></li>
+                        <li><a href="./colabora.php" class="text-white text-decoration-none"><i class="fas fa-hands-helping me-3"></i> Colabora</a></li>
+                        <li><a href="./contactenos.php" class="text-white text-decoration-none"><i class="fas fa-envelope me-3"></i> Contáctenos</a></li>
                     </ul>
                 </div>
                 <!-- Información de contacto -->

@@ -1,6 +1,7 @@
 <?php
 include_once "../Conexion.php";
 session_start();
+
 if (isset($_SESSION['usuario'])) {
     $usuario = $_SESSION['usuario'];
 }
@@ -12,33 +13,28 @@ if (!isset($_SESSION['usuario']) || $_SESSION['rol'] !== 'admin') {
 $idVoluntario = isset($_GET['id']) ? $_GET['id'] : null;
 
 
-
-// var_dump($socioId);
-
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     $idVoluntario = $_GET['id'];
+// var_dump($idVoluntario);
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        // Procesar el formulario de modificación
-        $nueva_membresia = $_POST['nueva_membresia'];
-        $nuevo_importe = $_POST['nuevo_importe'];
-        $nueva_fecha = $_POST['nueva_fecha'];
-        $nuevo_iban = $_POST['nuevo_iban'];
-        // ... otras variables que quieras actualizar
+
+        $nueva_area_de_interes = $_POST['nueva_area_de_interes'];
+        $nueva_disponibilidad = $_POST['nueva_disponibilidad'];
+        $nueva_fecha_ingreso = $_POST['nueva_fecha_ingreso'];
 
         try {
-            $stmtModificarSocio = $conn->prepare("UPDATE socios SET membresia = :nueva_membresia, importe = :nuevo_importe, fecha_ingreso = :nueva_fecha, iban = :nuevo_iban WHERE id_usuario = :idVoluntario");
-            $stmtModificarSocio->bindParam(':nueva_membresia', $nueva_membresia);
-            $stmtModificarSocio->bindParam(':nuevo_importe', $nuevo_importe);
-            $stmtModificarSocio->bindParam(':nueva_fecha', $nueva_fecha);
-            $stmtModificarSocio->bindParam(':nuevo_iban', $nuevo_iban);
-            $stmtModificarSocio->bindParam(':idVoluntario', $idVoluntario, PDO::PARAM_INT);
+            $stmtModificarVoluntario = $conn->prepare("UPDATE voluntarios SET area_de_interes = :nueva_area_de_interes, disponibilidad = :nueva_disponibilidad, fecha_ingreso = :nueva_fecha_ingreso WHERE id_usuario = :id_voluntario");
+            $stmtModificarVoluntario->bindParam(':nueva_area_de_interes', $nueva_area_de_interes);
+            $stmtModificarVoluntario->bindParam(':nueva_disponibilidad', $nueva_disponibilidad);
+            $stmtModificarVoluntario->bindParam(':nueva_fecha_ingreso', $nueva_fecha_ingreso);
+            $stmtModificarVoluntario->bindParam(':id_voluntario', $idVoluntario, PDO::PARAM_INT);
 
-            if ($stmtModificarSocio->execute()) {
-                header("Location: gestionSocios.php?exito=modificacion");
+            if ($stmtModificarVoluntario->execute()) {
+                header("Location: gestionVoluntarios.php?exito=modificacion");
                 exit();
             } else {
-                header("Location: gestionSocios.php?error=modificacion_fallo");
+                header("Location: gestionVoluntarios.php?error=modificacion_fallo");
                 exit();
             }
         } catch (PDOException $e) {
@@ -46,14 +42,15 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
             exit();
         }
     }
+    
     // Obtener los datos actuales del socio
     $stmtVoluntario = $conn->prepare("SELECT * FROM voluntarios WHERE id_usuario = :idVoluntario");
     $stmtVoluntario->bindParam(':idVoluntario', $idVoluntario, PDO::PARAM_INT);
     $stmtVoluntario->execute();
     $datosVoluntario = $stmtVoluntario->fetch(PDO::FETCH_ASSOC);
 
-    if (!$datosSocio) {
-        header("Location: gestionVoluntarios.php?error=socio_no_encontrado");
+    if (!$datosVoluntario) {
+        header("Location: gestionVoluntarios.php?error=Voluntario_no_encontrado");
         exit();
     }
 } else {
@@ -69,7 +66,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página Modificar Socio</title>
+    <title>Página Modificar Voluntario</title>
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
     <link rel="stylesheet" href="../style.css">
@@ -80,38 +77,43 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     <div class="container mt-5">
         <h1 class="text-center mb-4">Modificar Voluntario</h1>
         <form method="post" action="">
-            <div class="form-group">
-                <label for="membresia">Membresía:</label>
-                <select class="form-select" id="membresia" name="nueva_membresia" required>
-                    <option value="anual" <?php echo ($datosMembresia['membresia'] === 'anual') ? 'selected' : ''; ?>>Anual</option>
-                    <option value="trimestral" <?php echo ($datosMembresia['membresia'] === 'trimestral') ? 'selected' : ''; ?>>Trimestral</option>
-                    <option value="mensual" <?php echo ($datosMembresia['membresia'] === 'mensual') ? 'selected' : ''; ?>>Mensual</option>
-                    <option value="semanal" <?php echo ($datosMembresia['membresia'] === 'semanal') ? 'selected' : ''; ?>>Semanal</option>
+            <div class="form-group mb-3">
+                <label for="nueva_area_de_interes">Área de Interés:</label>
+                <select class="form-select" id="nueva_area_de_interes" name="nueva_area_de_interes" required>
+                    <option value="cuidado_animales" <?php echo ($datosVoluntario['area_de_interes'] === 'cuidado_animales') ? 'selected' : ''; ?>>Cuidado de animales</option>
+                    <option value="eventos_recaudacion" <?php echo ($datosVoluntario['area_de_interes'] === 'eventos_recaudacion') ? 'selected' : ''; ?>>Eventos y recaudación de fondos</option>
+                    <option value="educacion_concienciacion" <?php echo ($datosVoluntario['area_de_interes'] === 'educacion_concienciacion') ? 'selected' : ''; ?>>Educación y concienciación</option>
+                    <option value="asistencia_administrativa" <?php echo ($datosVoluntario['area_de_interes'] === 'asistencia_administrativa') ? 'selected' : ''; ?>>Asistencia administrativa</option>
+                    <option value="apoyo_refugios" <?php echo ($datosVoluntario['area_de_interes'] === 'apoyo_refugios') ? 'selected' : ''; ?>>Apoyo a refugios o albergues</option>
+                    <option value="transporte_animales" <?php echo ($datosVoluntario['area_de_interes'] === 'transporte_animales') ? 'selected' : ''; ?>>Transporte de animales</option>
+                    <option value="apoyo_tecnologico" <?php echo ($datosVoluntario['area_de_interes'] === 'apoyo_tecnologico') ? 'selected' : ''; ?>>Apoyo tecnológico</option>
+                    <option value="diseno_grafico" <?php echo ($datosVoluntario['area_de_interes'] === 'diseno_grafico') ? 'selected' : ''; ?>>Diseño gráfico y medios visuales</option>
+                    <option value="voluntariado_virtual" <?php echo ($datosVoluntario['area_de_interes'] === 'voluntariado_virtual') ? 'selected' : ''; ?>>Voluntariado virtual</option>
+                    <option value="otros" <?php echo ($datosVoluntario['area_de_interes'] === 'otros') ? 'selected' : ''; ?>>Otros</option>
                 </select>
             </div>
 
-
-            <div class="form-group">
-                <label for="importe">Importe:</label>
-                <input type="text" class="form-control" id="importe" name="nuevo_importe" value="<?php echo $datosMembresia['importe']; ?>" required>
+            <div class="form-group mb-3">
+                <label for="disponibilidad">Disponibilidad:</label>
+                <select class="form-select" id="nueva_disponibilidad" name="nueva_disponibilidad" required>
+                    <option value="dias_especificos" <?php echo ($datosVoluntario['disponibilidad'] === 'dias_especificos') ? 'selected' : ''; ?>>Días específicos</option>
+                    <option value="por_horas" <?php echo ($datosVoluntario['disponibilidad'] === 'por_horas') ? 'selected' : ''; ?>>Por horas específicas</option>
+                    <option value="flexibilidad_horaria" <?php echo ($datosVoluntario['disponibilidad'] === 'flexibilidad_horaria') ? 'selected' : ''; ?>>Flexibilidad horaria</option>
+                    <option value="fines_de_semana" <?php echo ($datosVoluntario['disponibilidad'] === 'fines_de_semana') ? 'selected' : ''; ?>>Fines de semana</option>
+                    <option value="medio_tiempo" <?php echo ($datosVoluntario['disponibilidad'] === 'medio_tiempo') ? 'selected' : ''; ?>>Medio tiempo</option>
+                    <option value="tiempo_completo" <?php echo ($datosVoluntario['disponibilidad'] === 'tiempo_completo') ? 'selected' : ''; ?>>Tiempo completo</option>
+                </select>
             </div>
 
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label for="nueva_fecha">Nueva fecha de ingreso:</label>
-                <input type="date" class="form-control" name="nueva_fecha" id="nueva_fecha" value="<?php echo $datosVoluntario['fecha_ingreso']; ?>" required>
+                <input type="date" class="form-control" name="nueva_fecha_ingreso" id="nueva_fecha_ingreso" value="<?php echo $datosVoluntario['fecha_ingreso']; ?>" required>
             </div>
 
             <button type="submit" class="btn btn-primary">Guardar Cambios</button>
             <a href="gestionVoluntarios.php" class="btn btn-secondary">Volver Atrás</a>
         </form>
     </div>
-    <!------------------------------ FOOTER -------------------------------->
-    <footer class="text-center text-white fixed-bottom" style="background-color: #6db1bf;">
-        <!-- Copyright -->
-        <div class="text-center p-3" id="footerPart2">
-            © 2023 Copyright: Esperanza Animal
-        </div>
-    </footer>
 </body>
 
 </html>

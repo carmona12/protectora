@@ -25,11 +25,13 @@ if (isset($_SESSION['usuario'])) {
                 width: 100%;
             }
         }
-        #tituloAcordeon1{
+
+        #tituloAcordeon1 {
             background-color: #6db1bf;
             font-weight: bold;
         }
-        #tituloAcordeon2{
+
+        #tituloAcordeon2 {
             background-color: #A09FF6;
             font-weight: bold;
         }
@@ -70,8 +72,7 @@ if (isset($_SESSION['usuario'])) {
                                     <i class="fas fa-user"></i> <?php echo $usuario; ?>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="usuarioDropdown">
-                                    <a class="dropdown-item" href="#">Mi Perfil</a>
-                                    <a class="dropdown-item" href="#">Configuración</a>
+                                    <a class="dropdown-item" href="./usuario/perfil_usuario.php">Mi Perfil</a>
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="./usuario/logout.php">Cerrar Sesión</a>
                                 </div>
@@ -181,10 +182,11 @@ if (isset($_SESSION['usuario'])) {
                 <div class="col-lg-4">
                     <h4 class="">Páginas</h4>
                     <ul class="list-unstyled ">
-                        <li><a href="#" class="text-white text-decoration-none"><i class="fas fa-home me-3"></i> Inicio</a></li>
-                        <li><a href="#" class="text-white text-decoration-none"><i class="fas fa-paw me-3"></i> Adopciones</a></li>
-                        <li><a href="#" class="text-white text-decoration-none"><i class="fas fa-donate me-3"></i> Donaciones</a></li>
-                        <li><a href="#" class="text-white text-decoration-none"><i class="fas fa-hands-helping me-3"></i> Voluntariado</a></li>
+                        <li><a href="./index.php" class="text-white text-decoration-none"><i class="fas fa-home me-3"></i> Inicio</a></li>
+                        <li><a href="./sobreNosotros.php" class="text-white text-decoration-none"><i class="fas fa-info-circle me-3"></i> Sobre Nosotros</a></li>
+                        <li><a href="./adoptar.php" class="text-white text-decoration-none"><i class="fas fa-paw me-3"></i> Adoptar</a></li>
+                        <li><a href="./colabora.php" class="text-white text-decoration-none"><i class="fas fa-hands-helping me-3"></i> Colabora</a></li>
+                        <li><a href="./contactenos.php" class="text-white text-decoration-none"><i class="fas fa-envelope me-3"></i> Contáctenos</a></li>
                     </ul>
                 </div>
                 <!-- Información de contacto -->

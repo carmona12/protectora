@@ -4,8 +4,8 @@ session_start();
 
 if (isset($_SESSION['usuario'])) {
     $usuario = $_SESSION['usuario'];
-  }
-  
+}
+
 // Verificar si el usuario ha iniciado sesión
 if (!isset($_SESSION['usuario'])) {
     header("Location: usuario/login.php");
@@ -43,12 +43,15 @@ if (isset($_POST['hacermeSocio'])) {
     $stmtInsertarSocio->bindParam(':iban', $iban, PDO::PARAM_STR);
     $stmtInsertarSocio->bindParam(':idUsuario', $idUsuario, PDO::PARAM_INT);
     if ($stmtInsertarSocio->execute()) {
-        header("Location: index.php");
-        exit();
+        $registroSocio = 'Has sido registrado correctamente como socio!';
     } else {
         header("Location: socios.php?error=insertar_fallo");
         exit();
     }
+}
+
+if (isset($_POST['dejarDeSerSocio'])) {
+    $mensajeDespedida = '¡Has dejado de ser socio! Gracias por tu colaboración hasta ahora.';
 }
 
 ?>
@@ -64,6 +67,7 @@ if (isset($_POST['hacermeSocio'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <script src="./js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -95,22 +99,15 @@ if (isset($_POST['hacermeSocio'])) {
 
                     <ul class="navbar-nav ml-auto">
                         <?php if (isset($usuario)) : ?>
-                            <!-- Si hay una sesión activa, muestra el logotipo de usuario y la opción de cerrar sesión -->
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="usuarioDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="fas fa-user"></i> <?php echo $usuario; ?>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="usuarioDropdown">
-                                    <a class="dropdown-item" href="#">Mi Perfil</a>
-                                    <a class="dropdown-item" href="#">Configuración</a>
+                                    <a class="dropdown-item" href="./usuario/perfil_usuario.php">Mi Perfil</a>
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="./usuario/logout.php">Cerrar Sesión</a>
                                 </div>
-                            </li>
-                        <?php else : ?>
-                            <!-- Si no hay una sesión activa, muestra la opción de iniciar sesión -->
-                            <li class="nav-item">
-                                <a class="nav-link" href="usuario/login.php"><i class="fas fa-sign-in-alt"></i> Iniciar sesión</a>
                             </li>
                         <?php endif; ?>
                     </ul>
@@ -126,15 +123,15 @@ if (isset($_POST['hacermeSocio'])) {
         </div>
         <div class="col-md-6">
             <?php if ($esSocio) : ?>
-                <p>Ya eres socio. ¡Gracias por tu membresía!</p>
-                <!-- Aquí puedes mostrar más información específica para socios -->
+                <div class="text-center">
+                    <h5 class="text-info-emphasis">Ya eres socio. ¡Gracias por tu membresía!</h5>
+                </div>
             <?php else : ?>
                 <div class=" mt-5">
                     <h3 class="mb-4">Rellena este formulario para ser socio</h3>
 
-                    <form method="post" action="socios.php">
+                    <form method="post" action="">
                         <div class="row">
-                            <!-- Campos del usuario -->
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="nombre">Nombre:</label>
@@ -180,23 +177,71 @@ if (isset($_POST['hacermeSocio'])) {
 
                                 <div class="form-group">
                                     <label for="importe">Importe:</label>
-                                    <input type="text" class="form-control" id="importe" name="importe" required>
+                                    <input type="number" class="form-control" id="importe" name="importe" pattern="^\d+$" required>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="iban">IBAN:</label>
-                                    <input type="text" class="form-control" id="iban" name="iban" required>
+                                    <input type="text" class="form-control" id="iban" name="iban" pattern="^ES\d{2}\d{4}\d{4}\d{1}\d{1}\w{10}$" required>
                                 </div>
 
-                                <!-- Input hidden para el id_usuario -->
                                 <input type="hidden" name="id_usuario" value="<?php echo $_SESSION['id_usuario']; ?>">
                             </div>
                         </div>
 
                         <button type="submit" class="btn btn-primary" name="hacermeSocio">Hacerme Socio</button>
                     </form>
+
+                    <?php if (!empty($registroSocio)) : ?>
+                        <script>
+                            Swal.fire({
+                                title: '¡Gracias por tu colaboración!',
+                                text: '<?php echo $registroSocio; ?>',
+                                icon: 'success',
+                                confirmButtonText: 'Ok'
+                            }).then(() => {
+                                // Redireccionar a la página de colaborar
+                                window.location.href = 'colabora.php';
+                            });
+                        </script>
+                    <?php endif; ?>
+
                 </div>
             <?php endif; ?>
+
+            <?php if (!empty($mensajeDespedida)) : ?>
+                <script>
+                    Swal.fire({
+                        title: '¡Hasta luego!',
+                        text: '<?php echo $mensajeDespedida; ?>',
+                        html: '<img src="./imagenes/colabora/despedida1.jpg" alt="Imagen" style="max-width: 300px;">',
+                        icon: 'info',
+                        confirmButtonText: 'Ok'
+                    }).then(() => {
+                        // Redireccionar a la página principal u otra según tus necesidades
+                        window.location.href = 'index.php';
+                    });
+                </script>
+            <?php endif; ?>
+
+            <script>
+                document.getElementById('dejarDeSerSocio').addEventListener('click', function() {
+                    Swal.fire({
+                        title: '¿Estás seguro?',
+                        html: '<img src="./imagenes/colabora/anular2.jpg" alt="Imagen" style="max-width: 250px;">',                      
+                        showCancelButton: true,
+                        confirmButtonText: 'Sí, dejar de ser socio',
+                        cancelButtonText: 'Cancelar',
+                        reverseButtons: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            
+                        }
+                    });
+                });
+            </script>
+
+
 
         </div>
     </div>
@@ -230,10 +275,11 @@ if (isset($_POST['hacermeSocio'])) {
                 <div class="col-lg-4">
                     <h4 class="">Páginas</h4>
                     <ul class="list-unstyled ">
-                        <li><a href="#" class="text-white text-decoration-none"><i class="fas fa-home me-3"></i> Inicio</a></li>
-                        <li><a href="#" class="text-white text-decoration-none"><i class="fas fa-paw me-3"></i> Adopciones</a></li>
-                        <li><a href="#" class="text-white text-decoration-none"><i class="fas fa-donate me-3"></i> Donaciones</a></li>
-                        <li><a href="#" class="text-white text-decoration-none"><i class="fas fa-hands-helping me-3"></i> Voluntariado</a></li>
+                        <li><a href="./index.php" class="text-white text-decoration-none"><i class="fas fa-home me-3"></i> Inicio</a></li>
+                        <li><a href="./sobreNosotros.php" class="text-white text-decoration-none"><i class="fas fa-info-circle me-3"></i> Sobre Nosotros</a></li>
+                        <li><a href="./adoptar.php" class="text-white text-decoration-none"><i class="fas fa-paw me-3"></i> Adoptar</a></li>
+                        <li><a href="./colabora.php" class="text-white text-decoration-none"><i class="fas fa-hands-helping me-3"></i> Colabora</a></li>
+                        <li><a href="./contactenos.php" class="text-white text-decoration-none"><i class="fas fa-envelope me-3"></i> Contáctenos</a></li>
                     </ul>
                 </div>
                 <!-- Información de contacto -->

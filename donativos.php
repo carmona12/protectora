@@ -29,18 +29,17 @@ if (isset($_POST['realizarDonativo'])) {
     $fecha = date("Y-m-d");
     $tipo = $_POST['tipoDonativo'];
     $cantidad = $_POST['cantidad'];
-    
 
-    $stmtInsertarVoluntario = $conn->prepare("INSERT INTO donativos (fecha, tipo, cantidad, id_usuario) VALUES (:fecha, :tipo, :cantidad, :idUsuario)");
 
-    $stmtInsertarVoluntario->bindParam(':fecha', $fecha, PDO::PARAM_STR);
-    $stmtInsertarVoluntario->bindParam(':tipo', $tipo, PDO::PARAM_STR);
-    $stmtInsertarVoluntario->bindParam(':cantidad', $cantidad, PDO::PARAM_STR);
-    $stmtInsertarVoluntario->bindParam(':idUsuario', $idUsuario, PDO::PARAM_INT);
+    $stmtInsertarDonativo = $conn->prepare("INSERT INTO donativos (fecha, tipo, cantidad, id_usuario) VALUES (:fecha, :tipo, :cantidad, :idUsuario)");
 
-    if ($stmtInsertarVoluntario->execute()) {
-        header("Location: index.php");
-        exit();
+    $stmtInsertarDonativo->bindParam(':fecha', $fecha, PDO::PARAM_STR);
+    $stmtInsertarDonativo->bindParam(':tipo', $tipo, PDO::PARAM_STR);
+    $stmtInsertarDonativo->bindParam(':cantidad', $cantidad, PDO::PARAM_STR);
+    $stmtInsertarDonativo->bindParam(':idUsuario', $idUsuario, PDO::PARAM_INT);
+
+    if ($stmtInsertarDonativo->execute()) {
+        $realizarDonativo = '¡Muchas gracias por tu aportación!';   
     } else {
         header("Location: donativos.php?error=insertar_fallo");
         exit();
@@ -59,6 +58,7 @@ if (isset($_POST['realizarDonativo'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <script src="./js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -90,22 +90,15 @@ if (isset($_POST['realizarDonativo'])) {
 
                     <ul class="navbar-nav ml-auto">
                         <?php if (isset($usuario)) : ?>
-                            <!-- Si hay una sesión activa, muestra el logotipo de usuario y la opción de cerrar sesión -->
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="usuarioDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="fas fa-user"></i> <?php echo $usuario; ?>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="usuarioDropdown">
-                                    <a class="dropdown-item" href="#">Mi Perfil</a>
-                                    <a class="dropdown-item" href="#">Configuración</a>
+                                    <a class="dropdown-item" href="./usuario/perfil_usuario.php">Mi Perfil</a>
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="./usuario/logout.php">Cerrar Sesión</a>
                                 </div>
-                            </li>
-                        <?php else : ?>
-                            <!-- Si no hay una sesión activa, muestra la opción de iniciar sesión -->
-                            <li class="nav-item">
-                                <a class="nav-link" href="usuario/login.php"><i class="fas fa-sign-in-alt"></i> Iniciar sesión</a>
                             </li>
                         <?php endif; ?>
                     </ul>
@@ -117,7 +110,6 @@ if (isset($_POST['realizarDonativo'])) {
     <div class="container mt-5">
         <h1 class="text-center">¡Haz tu donativo!</h1>
         <form method="post" action="donativos.php" class="row">
-            <!-- Columna izquierda -->
             <div class="col-md-6">
                 <div class="mb-3">
                     <label for="nombre" class="form-label">Nombre:</label>
@@ -132,10 +124,8 @@ if (isset($_POST['realizarDonativo'])) {
                     <label for="cantidad" class="form-label">Cantidad:</label>
                     <input type="number" class="form-control" id="cantidad" name="cantidad" min="1" required>
                 </div>
-
             </div>
 
-            <!-- Columna derecha -->
             <div class="col-md-6">
                 <div class="mb-3">
                     <label for="apellidos" class="form-label">Apellidos:</label>
@@ -143,13 +133,9 @@ if (isset($_POST['realizarDonativo'])) {
                 </div>
 
                 <div class="mb-3">
-                    <label for="iban" class="form-label">IBAN:</label>
-                    <input type="text" class="form-control" id="iban" name="iban" value="<?php echo $datosSocios['iban']; ?>" readonly required>
-                </div>
-
-                <div class="mb-3">
                     <label for="tipoDonativo" class="form-label">Tipo de Donativo:</label>
                     <select class="form-select" id="tipoDonativo" name="tipoDonativo" required>
+                        <option value="" disabled selected>Selecciona un tipo de donativo</option>
                         <option value="efectivo">Efectivo</option>
                         <option value="paypal">Paypal</option>
                         <option value="tarjeta">Tarjeta de crédito/débito</option>
@@ -158,15 +144,24 @@ if (isset($_POST['realizarDonativo'])) {
                     </select>
                 </div>
 
-                <!-- Input hidden para el id_usuario -->
                 <input type="hidden" name="id_usuario" value="<?php echo $_SESSION['id_usuario']; ?>">
 
-
-                <button type="submit" name="realizarDonativo" id="realizarDonativo" class="btn btn-primary">Realizar Donativo</button>
+                <button type="submit" name="realizarDonativo" id="realizarDonativo" class="btn btn-primary mb-3">Realizar Donativo</button>
+                <?php if (!empty($realizarDonativo)) : ?>
+                    <script>
+                        Swal.fire({  
+                            title: '¡Donativo realizado! <i class="fa-solid fa-paw"></i>',
+                            text: '<?php echo $realizarDonativo; ?>',
+                            icon: 'success',
+                            confirmButtonText: 'Ok'
+                        }).then(() => {
+                            window.location.href = 'colabora.php';
+                        });
+                    </script>
+                <?php endif; ?>
             </div>
         </form>
     </div>
-
 
     <!------------------------------ FOOTER -------------------------------->
     <footer class="text-center text-white" style="background-color: #6db1bf;">
@@ -198,10 +193,11 @@ if (isset($_POST['realizarDonativo'])) {
                 <div class="col-lg-4">
                     <h4 class="">Páginas</h4>
                     <ul class="list-unstyled ">
-                        <li><a href="#" class="text-white text-decoration-none"><i class="fas fa-home me-3"></i> Inicio</a></li>
-                        <li><a href="#" class="text-white text-decoration-none"><i class="fas fa-paw me-3"></i> Adopciones</a></li>
-                        <li><a href="#" class="text-white text-decoration-none"><i class="fas fa-donate me-3"></i> Donaciones</a></li>
-                        <li><a href="#" class="text-white text-decoration-none"><i class="fas fa-hands-helping me-3"></i> Voluntariado</a></li>
+                        <li><a href="./index.php" class="text-white text-decoration-none"><i class="fas fa-home me-3"></i> Inicio</a></li>
+                        <li><a href="./sobreNosotros.php" class="text-white text-decoration-none"><i class="fas fa-info-circle me-3"></i> Sobre Nosotros</a></li>
+                        <li><a href="./adoptar.php" class="text-white text-decoration-none"><i class="fas fa-paw me-3"></i> Adoptar</a></li>
+                        <li><a href="./colabora.php" class="text-white text-decoration-none"><i class="fas fa-hands-helping me-3"></i> Colabora</a></li>
+                        <li><a href="./contactenos.php" class="text-white text-decoration-none"><i class="fas fa-envelope me-3"></i> Contáctenos</a></li>
                     </ul>
                 </div>
                 <!-- Información de contacto -->

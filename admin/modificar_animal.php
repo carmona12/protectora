@@ -99,15 +99,19 @@ if (!$detalleAnimal) {
             </div>
             <div class="form-group">
                 <label for="nuevo_tamano">Nuevo Tamaño:</label>
-                <input type="text" class="form-control" id="nuevo_tamano" name="nuevo_tamano" value="<?php echo $detalleAnimal['tamano']; ?>">
-            </div> 
+                <select class="form-select" id="nuevo_tamano" name="nuevo_tamano" required>
+                    <option value="Pequeño" <?php echo ($detalleAnimal['tamano'] === 'Pequeño') ? 'selected' : ''; ?>>Pequeño</option>
+                    <option value="Medio" <?php echo ($detalleAnimal['tamano'] === 'Medio') ? 'selected' : ''; ?>>Medio</option>
+                    <option value="Grande" <?php echo ($detalleAnimal['tamano'] === 'Grande') ? 'selected' : ''; ?>>Grande</option>
+                </select>
+            </div>
             <div class="form-group">
                 <label for="nuevo_edad">Nueva Edad:</label>
                 <input type="number" class="form-control" id="nuevo_edad" name="nuevo_edad" value="<?php echo $detalleAnimal['edad']; ?>">
             </div>
             <div class="form-group">
                 <label for="nuevo_sexo">Nuevo Sexo:</label>
-                <select class="form-control" id="nuevo_sexo" name="nuevo_sexo">
+                <select class="form-select" id="nuevo_sexo" name="nuevo_sexo">
                     <option value="Macho" <?php echo ($detalleAnimal['sexo'] === 'Macho') ? 'selected' : ''; ?>>Macho</option>
                     <option value="Hembra" <?php echo ($detalleAnimal['sexo'] === 'Hembra') ? 'selected' : ''; ?>>Hembra</option>
                 </select>
@@ -127,9 +131,10 @@ if (!$detalleAnimal) {
             <div class="form-group">
                 <label for="nueva_foto">Nueva foto animal:</label>
                 <input type="text" class="form-control" name="nueva_foto" id="nueva_foto" value="<?php echo $detalleAnimal['foto_animal']; ?>">
-            </div>        
-            
+            </div>
+
             <button type="submit" class="btn btn-primary my-3">Guardar Cambios</button>
+            <a href="gestionAnimales.php" class="btn btn-secondary">Volver atrás</a>
         </form>
     </div>
 

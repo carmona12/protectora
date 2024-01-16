@@ -17,19 +17,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $_SESSION['rol'] = $row['rol'];
                 $_SESSION['usuario'] = $row['usuario'];
                 $_SESSION['password'] = $row['password'];
-                header("Location: ../index.php");
+
+                if ($_SESSION['rol'] == 'admin') {
+                    header("Location: ../admin/admin.php");
+                } else {
+                    header("Location: ../index.php");
+                }
                 exit();
             } else {
-                echo '<div class="alert alert-danger alert-dismissible fade show d-flex justify-content-between align-items-center" role="alert">';
-                echo 'La contraseña proporcionada es incorrecta.';
-                echo '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
-                echo '</div>';
+                $errorContraseña = 'La contraseña proporcionada es incorrecta.';
             }
         } else {
-            echo '<div class="alert alert-danger alert-dismissible fade show d-flex justify-content-between align-items-center" role="alert">';
-                echo 'El nombre de usuario no existe.';
-                echo '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
-                echo '</div>';
+                $errorUsuario = 'El nombre de usuario no existe.';
         }
     }
 }
@@ -42,11 +41,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página Inicio</title>
+    <title>Página Login</title>
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
     <link rel="stylesheet" href="../style.css">
     <script src="../js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body id="bodyLogin">
@@ -60,20 +60,41 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
                 <form class="" action="" method="post">
                     <div class="mb-3">
-                        <input type="text" class="form-control" id="inputUsuario" placeholder="Usuario" name="usuario">
+                        <input type="text" class="form-control" id="inputUsuario" placeholder="Usuario" name="usuario" required>
                     </div>
                     <div class="mb-3">
-                        <input type="password" class="form-control" id="inputContraseña" placeholder="Contraseña" name="password">
+                        <input type="password" class="form-control" id="inputContraseña" placeholder="Contraseña" name="password" required>
                     </div>
                     <button type="submit" class="btn btn-primary" id="botonLogin">Iniciar Sesión</button>
                 </form>
+                <?php if (!empty($errorUsuario)) : ?>
+                    <script>
+                        Swal.fire({
+                            title: '¡Usuario incorrecto!',
+                            text: '<?php echo $errorUsuario; ?>',
+                            icon: 'error',
+                            confirmButtonText: 'Ok'
+                        });
+                    </script>
+                <?php endif; ?>
+
+                <?php if (!empty($errorContraseña)) : ?>
+                    <script>
+                        Swal.fire({
+                            title: '¡Contraseña errónea!',
+                            text: '<?php echo $errorContraseña; ?>',
+                            icon: 'error',
+                            confirmButtonText: 'Ok'
+                        });
+                    </script>
+                <?php endif; ?>
             </div>
             <div class="card-footer text-muted">
                 <p>¿No tienes una cuenta? <a href="registro.php">Regístrate aquí</a> </p>
             </div>
         </div>
+        <a href="../index.php" class="btn btn-secondary position-absolute top-0 start-0 mt-3 ms-3">Volver atrás</a>
     </section>
-
 </body>
 
 </html>

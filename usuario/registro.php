@@ -46,8 +46,7 @@ if (isset($_POST['botonRegistro'])) {
                 $stmtInsertarUsuario->bindParam(':rol', $rol);
                 $stmtInsertarUsuario->execute();
 
-                echo 'Has sido registrado!';
-                header('Location: login.php');
+                $registroExitoso = 'Has sido registrado correctamente!';
             } catch (PDOException $e) {
                 echo 'Error: ' . $e->getMessage();
             }
@@ -62,13 +61,14 @@ if (isset($_POST['botonRegistro'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página Inicio</title>
+    <title>Página de registro</title>
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
     <link rel="stylesheet" href="../style.css">
     <script src="../js/bootstrap.bundle.min.js"></script>
     <script src="../jquery-3.7.1.min.js"></script>
     <script src="./registro.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body id="bodyLogin">
@@ -83,38 +83,53 @@ if (isset($_POST['botonRegistro'])) {
                 <form class="container" action="" method="post" onsubmit="return validarFormularioRegistro()">
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <input type="text" class="form-control" id="inputNombreRegistro" placeholder="Nombre" name="nombre">
+                            <input type="text" class="form-control" id="inputNombreRegistro" placeholder="Nombre" name="nombre" pattern="[a-zA-ZáéíóúÁÉÍÓÚ\s]+">
                         </div>
                         <div class="col-md-6 mb-3">
-                            <input type="text" class="form-control" id="inputApellidosRegistro" placeholder="Apellidos" name="apellidos">
+                            <input type="text" class="form-control" id="inputApellidosRegistro" placeholder="Apellidos" name="apellidos" pattern="[a-zA-ZáéíóúÁÉÍÓÚ\s]+">
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4 mb-3">
-                            <input type="text" class="form-control" id="inputDniRegistro" placeholder="DNI" name="dni">
+                            <input type="text" class="form-control" id="inputDniRegistro" placeholder="DNI" name="dni" title="Debe poner 8 números y una letra">
                         </div>
                         <div class="col-md-4 mb-3">
-                            <input type="text" class="form-control" id="inputTelefonoRegistro" placeholder="Teléfono" name="telefono">
+                            <input type="text" class="form-control" id="inputTelefonoRegistro" placeholder="Teléfono" name="telefono" title="Debe poner 9 dígitos">
                         </div>
                         <div class="col-md-4 mb-3">
-                            <input type="text" class="form-control" id="inputCpRegistro" placeholder="CP" name="cp">
+                            <input type="text" class="form-control" id="inputCpRegistro" placeholder="CP" name="cp" title="Debe poner 5 números">
                         </div>
                     </div>
                     <div class="mb-3">
-                        <input type="text" class="form-control" id="inputEmailRegistro" placeholder="Email" name="email">
+                        <input type="email" class="form-control" id="inputEmailRegistro" placeholder="Email" name="email">
                     </div>
                     <div class="mb-3">
-                        <input type="text" class="form-control" id="inputUsuario" placeholder="Usuario" name="usuario">
+                        <input type="text" class="form-control" id="inputUsuario" placeholder="Usuario" name="usuario" pattern="[a-zA-Z0-9]+">
                     </div>
                     <div class="mb-3">
                         <input type="password" class="form-control" id="inputContraseña" placeholder="Contraseña" name="password">
                     </div>
                     <button type="submit" class="btn btn-primary" id="botonRegistro" name="botonRegistro">Registrarse</button>
+                    <a href="login.php" class="btn btn-secondary">Volver atrás</a>
                 </form>
+
+                <?php if (!empty($registroExitoso)) : ?>
+                    <script>
+                        Swal.fire({
+                            title: '¡Registro exitoso!',
+                            text: '<?php echo $registroExitoso; ?>',
+                            icon: 'success',
+                            confirmButtonText: 'Ok'
+                        }).then(() => {
+                            // Redireccionar a la página de inicio de sesión
+                            window.location.href = 'login.php';
+                        });
+                    </script>
+                <?php endif; ?>
+
             </div>
         </div>
     </section>
-
 </body>
 
 </html>
